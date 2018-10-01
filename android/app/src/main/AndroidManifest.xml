@@ -3,6 +3,12 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <!-- Push Notifications -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <!-- End push notification dependencies -->
 
     <application
       android:name=".MainApplication"
@@ -10,6 +16,31 @@
       android:icon="@mipmap/ic_launcher"
       android:allowBackup="false"
       android:theme="@style/AppTheme">
+
+      <!-- Push notifications dependencies -->
+      <receiver android:name="com.google.android.gms.gcm.GcmReceiver" 
+        android:exported="true" android:permission="com.google.android.c2dm.permission.SEND" >
+        <intent-filter>
+          <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+          <category android:name="${applicationId}" />
+        </intent-filter>
+      </receiver>
+
+      <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationPublisher" />
+      <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationBootEventReceiver">
+        <intent-filter>
+          <action android:name="android.intent.action.BOOT_COMPLETED" />
+        </intent-filter>
+      </receiver>
+
+      <service android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationRegistrationService"/>
+      <service android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationListenerService" android:exported="false" >
+          <intent-filter>
+            <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+          </intent-filter>
+      </service>
+      <!-- End push notification linking -->
+
       <activity
         android:name=".MainActivity"
         android:label="@string/app_name"
